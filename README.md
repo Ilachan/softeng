@@ -3,8 +3,9 @@
 - Project Name: FitFlow
 - Project description: FitFlow is a full-stack web application designed to manage the lifecycle of fitness class registration. The system serves as a bridge between fitness enthusiasts and studio offerings, providing a real-time interface for class discovery, enrollment management, and schedule coordination. From an engineering standpoint, the project focuses on high-performance concurrency, stateless authentication, and modular front-end architecture.A full-stack web application built with React and Go. This project demonstrates a fitness class registration website. The website presents different types of fitness classes, and allows users to register/cancel classes. Other functions like setting a reminder to register specific class. 
 - Members:
-  Frontend: Ila Adhikari, Forrest Yan Sun;
-  Backend: Yingzhu Chen, Qing Li
+  - Frontend: Ila Adhikari, Forrest Yan Sun
+  - Backend: Yingzhu Chen, Qing Li
+
 
 ---
 
