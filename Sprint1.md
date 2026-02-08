@@ -13,4 +13,8 @@ I can cancel a class if I don't want to go.
 I want to know the information about the class, for example, who is the instructor, what is this class for.
 
 ## 5. Ability to see the class availability
+I want to know how many spots were left for a class.
+
+##6. Ability to "like" a class
+I want to save classes that I am interested.
 
