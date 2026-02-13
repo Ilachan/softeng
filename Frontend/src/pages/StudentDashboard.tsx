@@ -1,13 +1,10 @@
-import React, { useState } from "react";
 import Button from "../components/ui/Button";
 import { Icons } from "../lib/icons";
-import Browse from "./Browse";
-import MySchedule from "./MySchedule";
 import { useAuthStore } from "../store/authStore";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Outlet, NavLink } from "react-router-dom";
+import BackgroundBlobs from "../components/ui/BackgroundBlobs";
 
 const StudentDashboard = () => {
-  const [activeTab, setActiveTab] = useState("browse");
   const { logout } = useAuthStore();
   const navigate = useNavigate();
 
@@ -25,34 +22,38 @@ const StudentDashboard = () => {
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between h-20 items-center">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-gradient-to-tr from-violet-600 to-indigo-600 rounded-xl flex items-center justify-center text-white font-bold shadow-md">
+              <div className="w-10 h-10 bg-linear-to-tr from-violet-600 to-indigo-600 rounded-xl flex items-center justify-center text-white font-bold shadow-md">
                 F
               </div>
-              <span className="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-violet-600 to-indigo-600">
+              <span className="text-xl font-bold bg-clip-text text-transparent bg-linear-to-r from-violet-600 to-indigo-600">
                 FitFlow
               </span>
             </div>
             <div className="flex items-center gap-2 bg-slate-100/50 p-1 rounded-xl">
-              <button
-                onClick={() => setActiveTab("browse")}
-                className={`px-4 py-2 rounded-lg text-sm font-semibold transition-all ${
-                  activeTab === "browse"
-                    ? "bg-white text-indigo-600 shadow-sm"
-                    : "text-slate-500 hover:text-slate-700"
-                }`}
+              <NavLink
+                to="browse"
+                className={({ isActive }) =>
+                  `px-4 py-2 rounded-lg text-sm font-semibold transition-all ${
+                    isActive
+                      ? "bg-white text-indigo-600 shadow-sm"
+                      : "text-slate-500 hover:text-slate-700"
+                  }`
+                }
               >
                 Browse
-              </button>
-              <button
-                onClick={() => setActiveTab("my")}
-                className={`px-4 py-2 rounded-lg text-sm font-semibold transition-all ${
-                  activeTab === "my"
-                    ? "bg-white text-indigo-600 shadow-sm"
-                    : "text-slate-500 hover:text-slate-700"
-                }`}
+              </NavLink>
+              <NavLink
+                to="my-schedule"
+                className={({ isActive }) =>
+                  `px-4 py-2 rounded-lg text-sm font-semibold transition-all ${
+                    isActive
+                      ? "bg-white text-indigo-600 shadow-sm"
+                      : "text-slate-500 hover:text-slate-700"
+                  }`
+                }
               >
                 My Schedule
-              </button>
+              </NavLink>
             </div>
             <Button
               variant="ghost"
@@ -66,12 +67,10 @@ const StudentDashboard = () => {
       </nav>
 
       <main className="max-w-6xl mx-auto px-4 py-12">
-        {activeTab === "browse" ? <Browse /> : <MySchedule />}
+        <Outlet />
       </main>
     </div>
   );
 };
-
-import BackgroundBlobs from "../components/ui/BackgroundBlobs";
 
 export default StudentDashboard;

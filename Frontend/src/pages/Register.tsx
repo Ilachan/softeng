@@ -1,4 +1,3 @@
-import React from "react";
 import { useNavigate } from "react-router-dom";
 import Button from "../components/ui/Button";
 import Card from "../components/ui/Card";
@@ -14,7 +13,7 @@ const Register = () => {
       <BackgroundBlobs />
       <Card className="w-full max-w-md p-8 relative z-10">
         <div className="text-center mb-8">
-          <div className="w-16 h-16 bg-gradient-to-tr from-violet-600 to-indigo-600 rounded-2xl mx-auto flex items-center justify-center mb-4 shadow-lg shadow-indigo-500/30">
+          <div className="w-16 h-16 bg-linear-to-tr from-violet-600 to-indigo-600 rounded-2xl mx-auto flex items-center justify-center mb-4 shadow-lg shadow-indigo-500/30">
             <span className="text-3xl">💪</span>
           </div>
           <h1 className="text-3xl font-bold text-slate-800 mb-2">FitFlow</h1>
@@ -42,7 +41,10 @@ const Register = () => {
             <Input type="password" placeholder="Password" />
           </div>
 
-          <Button className="w-full py-3.5 text-lg" onClick={() => navigate("/login")}>
+          <Button
+            className="w-full py-3.5 text-lg"
+            onClick={() => navigate("/login")}
+          >
             Create Account
           </Button>
         </div>
