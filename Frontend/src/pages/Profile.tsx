@@ -8,17 +8,17 @@ import toast from "react-hot-toast";
 const Profile = () => {
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
-    username: "john_doe",
+    name: "John Doe",
     email: "john@example.com",
-    firstName: "John",
-    lastName: "Doe",
-    age: "24",
-    height: "175",
-    weight: "70",
-    bio: "Fitness enthusiast",
+    date_of_birth: "2000-01-01",
+    gender: "Male",
+    phone_number: "+1 (555) 123-4567",
+    address: "123 Fitness St, Wellness City",
   });
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+  ) => {
     const { name, value } = e.target;
     setFormData((prev) => ({
       ...prev,
@@ -81,11 +81,9 @@ const Profile = () => {
             </div>
             <div>
               <h2 className="text-xl font-bold text-slate-800">
-                {formData.firstName} {formData.lastName}
+                {formData.name}
               </h2>
-              <p className="text-indigo-600 font-medium">
-                @{formData.username}
-              </p>
+              <p className="text-indigo-600 font-medium">{formData.email}</p>
             </div>
           </Card>
         </div>
@@ -101,13 +99,13 @@ const Profile = () => {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="space-y-2">
                 <label className="text-sm font-medium text-slate-700">
-                  Username
+                  Full Name
                 </label>
                 <Input
-                  name="username"
-                  value={formData.username}
+                  name="name"
+                  value={formData.name}
                   onChange={handleChange}
-                  placeholder="Enter username"
+                  placeholder="Enter full name"
                 />
               </div>
               <div className="space-y-2">
@@ -134,81 +132,51 @@ const Profile = () => {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="space-y-2">
                 <label className="text-sm font-medium text-slate-700">
-                  First Name
+                  Date of Birth
                 </label>
                 <Input
-                  name="firstName"
-                  value={formData.firstName}
+                  name="date_of_birth"
+                  type="date"
+                  value={formData.date_of_birth}
                   onChange={handleChange}
-                  placeholder="First name"
                 />
               </div>
               <div className="space-y-2">
                 <label className="text-sm font-medium text-slate-700">
-                  Last Name
+                  Gender
+                </label>
+                <select
+                  name="gender"
+                  value={formData.gender}
+                  onChange={handleChange}
+                  className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none transition-all"
+                >
+                  <option value="">Select Gender</option>
+                  <option value="Male">Male</option>
+                  <option value="Female">Female</option>
+                  <option value="Other">Other</option>
+                </select>
+              </div>
+              <div className="space-y-2">
+                <label className="text-sm font-medium text-slate-700">
+                  Phone Number
                 </label>
                 <Input
-                  name="lastName"
-                  value={formData.lastName}
+                  name="phone_number"
+                  value={formData.phone_number}
                   onChange={handleChange}
-                  placeholder="Last name"
+                  placeholder="+1 (555) 000-0000"
                 />
               </div>
               <div className="space-y-2">
                 <label className="text-sm font-medium text-slate-700">
-                  Bio
+                  Address
                 </label>
                 <Input
-                  name="bio"
-                  value={formData.bio}
+                  name="address"
+                  value={formData.address}
                   onChange={handleChange}
-                  placeholder="Short bio"
-                />
-              </div>
-            </div>
-          </Card>
-
-          {/* Metrics */}
-          <Card className="p-6 space-y-4">
-            <h3 className="text-lg font-bold text-slate-800 mb-4 flex items-center gap-2">
-              <span className="w-1 h-6 bg-pink-500 rounded-full" />
-              Body Metrics
-            </h3>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <div className="space-y-2">
-                <label className="text-sm font-medium text-slate-700">
-                  Age
-                </label>
-                <Input
-                  name="age"
-                  type="number"
-                  value={formData.age}
-                  onChange={handleChange}
-                  placeholder="Age"
-                />
-              </div>
-              <div className="space-y-2">
-                <label className="text-sm font-medium text-slate-700">
-                  Height (cm)
-                </label>
-                <Input
-                  name="height"
-                  type="number"
-                  value={formData.height}
-                  onChange={handleChange}
-                  placeholder="Height"
-                />
-              </div>
-              <div className="space-y-2">
-                <label className="text-sm font-medium text-slate-700">
-                  Weight (kg)
-                </label>
-                <Input
-                  name="weight"
-                  type="number"
-                  value={formData.weight}
-                  onChange={handleChange}
-                  placeholder="Weight"
+                  placeholder="Street Address"
                 />
               </div>
             </div>
