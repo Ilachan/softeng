@@ -1,14 +1,17 @@
 import { Routes, Route, Navigate } from "react-router-dom";
+import { Toaster } from "react-hot-toast";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Browse from "./pages/Browse";
 import MySchedule from "./pages/MySchedule";
+import Profile from "./pages/Profile";
 import MainLayout from "./layouts/MainLayout";
 import AuthGuard from "./components/AuthGuard";
 
 function App() {
   return (
     <main>
+      <Toaster position="top-center" reverseOrder={false} />
       <Routes>
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
@@ -19,6 +22,7 @@ function App() {
             <Route index element={<Navigate to="browse" replace />} />
             <Route path="browse" element={<Browse />} />
             <Route path="my-schedule" element={<MySchedule />} />
+            <Route path="profile" element={<Profile />} />
           </Route>
           {/* Default redirect for authenticated users targeting root */}
           <Route path="/" element={<Navigate to="/dashboard" replace />} />

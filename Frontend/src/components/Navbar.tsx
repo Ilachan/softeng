@@ -50,13 +50,32 @@ const Navbar = () => {
               My Schedule
             </NavLink>
           </div>
-          <Button
-            variant="ghost"
-            onClick={handleLogout}
-            className="hidden sm:flex"
-          >
-            <Icons.Logout /> Logout
-          </Button>
+
+          <div className="flex items-center gap-4">
+            <NavLink
+              to="/dashboard/profile"
+              className={({ isActive }) =>
+                `relative w-10 h-10 rounded-full overflow-hidden border-2 transition-all cursor-pointer ${
+                  isActive
+                    ? "border-indigo-600 ring-2 ring-indigo-100"
+                    : "border-slate-200 hover:border-indigo-400"
+                }`
+              }
+            >
+              <img
+                src={`https://picsum.photos/id/${1}/200/200`}
+                alt="Profile"
+                className="w-full h-full object-cover"
+              />
+            </NavLink>
+            <Button
+              variant="ghost"
+              onClick={handleLogout}
+              className="hidden sm:flex"
+            >
+              <Icons.Logout /> Logout
+            </Button>
+          </div>
         </div>
       </div>
     </nav>
