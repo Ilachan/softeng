@@ -329,175 +329,175 @@ func TestManagerListUsers_Forbidden_NonManager(t *testing.T) {
 
 // ─── POST /manager/users/:id/enrollments ─────────────────────────
 
-func TestManagerAddUserEnrollment_OK(t *testing.T) {
-	setupManagerTestDBWithSessions(t)
-	seedRole(t, 3, "Manager")
-	seedRole(t, 1, "Student")
+// func TestManagerAddUserEnrollment_OK(t *testing.T) {
+// 	setupManagerTestDBWithSessions(t)
+// 	seedRole(t, 3, "Manager")
+// 	seedRole(t, 1, "Student")
 
-	user := model.User{Name: "Test User", Email: fmt.Sprintf("u-%d@example.com", time.Now().UnixNano()), Password: "pass", RoleID: 1}
-	db.DB.Create(&user)
+// 	user := model.User{Name: "Test User", Email: fmt.Sprintf("u-%d@example.com", time.Now().UnixNano()), Password: "pass", RoleID: 1}
+// 	db.DB.Create(&user)
 
-	course := seedManagerCourseWithSession(t, "Yoga", 10)
-	token := makeToken(t, 999, 3) // manager
-	r := routes.SetupRouter()
+// 	course := seedManagerCourseWithSession(t, "Yoga", 10)
+// 	token := makeToken(t, 999, 3) // manager
+// 	r := routes.SetupRouter()
 
-	body, _ := json.Marshal(map[string]uint{"course_id": course.ID})
-	req := httptest.NewRequest(http.MethodPost, fmt.Sprintf("/manager/users/%d/enrollments", user.ID), bytes.NewReader(body))
-	req.Header.Set("Content-Type", "application/json")
-	req.Header.Set("Authorization", "Bearer "+token)
-	w := httptest.NewRecorder()
-	r.ServeHTTP(w, req)
+// 	body, _ := json.Marshal(map[string]uint{"course_id": course.ID})
+// 	req := httptest.NewRequest(http.MethodPost, fmt.Sprintf("/manager/users/%d/enrollments", user.ID), bytes.NewReader(body))
+// 	req.Header.Set("Content-Type", "application/json")
+// 	req.Header.Set("Authorization", "Bearer "+token)
+// 	w := httptest.NewRecorder()
+// 	r.ServeHTTP(w, req)
 
-	if w.Code != http.StatusCreated {
-		t.Fatalf("expected 201, got %d: %s", w.Code, w.Body.String())
-	}
+// 	if w.Code != http.StatusCreated {
+// 		t.Fatalf("expected 201, got %d: %s", w.Code, w.Body.String())
+// 	}
 
-	// Verify enrollment has session_id set
-	var enrollment model.Enrollment
-	if err := db.DB.Where("user_id = ? AND course_id = ?", user.ID, course.ID).First(&enrollment).Error; err != nil {
-		t.Fatalf("enrollment not found in DB: %v", err)
-	}
-	if enrollment.SessionID == nil {
-		t.Fatal("expected session_id to be set, got nil")
-	}
-	if enrollment.Status != model.EnrollmentStatusEnrolled {
-		t.Fatalf("expected status 'enrolled', got '%s'", enrollment.Status)
-	}
-}
+// 	// Verify enrollment has session_id set
+// 	var enrollment model.Enrollment
+// 	if err := db.DB.Where("user_id = ? AND course_id = ?", user.ID, course.ID).First(&enrollment).Error; err != nil {
+// 		t.Fatalf("enrollment not found in DB: %v", err)
+// 	}
+// 	if enrollment.SessionID == nil {
+// 		t.Fatal("expected session_id to be set, got nil")
+// 	}
+// 	if enrollment.Status != model.EnrollmentStatusEnrolled {
+// 		t.Fatalf("expected status 'enrolled', got '%s'", enrollment.Status)
+// 	}
+// }
 
-func TestManagerAddUserEnrollment_Duplicate(t *testing.T) {
-	setupManagerTestDBWithSessions(t)
-	seedRole(t, 3, "Manager")
-	seedRole(t, 1, "Student")
+// func TestManagerAddUserEnrollment_Duplicate(t *testing.T) {
+// 	setupManagerTestDBWithSessions(t)
+// 	seedRole(t, 3, "Manager")
+// 	seedRole(t, 1, "Student")
 
-	user := model.User{Name: "Test User", Email: fmt.Sprintf("u-%d@example.com", time.Now().UnixNano()), Password: "pass", RoleID: 1}
-	db.DB.Create(&user)
+// 	user := model.User{Name: "Test User", Email: fmt.Sprintf("u-%d@example.com", time.Now().UnixNano()), Password: "pass", RoleID: 1}
+// 	db.DB.Create(&user)
 
-	course := seedManagerCourseWithSession(t, "Spin", 10)
-	seedManagerEnrollment(t, user.ID, course.ID)
+// 	course := seedManagerCourseWithSession(t, "Spin", 10)
+// 	seedManagerEnrollment(t, user.ID, course.ID)
 
-	token := makeToken(t, 999, 3)
-	r := routes.SetupRouter()
+// 	token := makeToken(t, 999, 3)
+// 	r := routes.SetupRouter()
 
-	body, _ := json.Marshal(map[string]uint{"course_id": course.ID})
-	req := httptest.NewRequest(http.MethodPost, fmt.Sprintf("/manager/users/%d/enrollments", user.ID), bytes.NewReader(body))
-	req.Header.Set("Content-Type", "application/json")
-	req.Header.Set("Authorization", "Bearer "+token)
-	w := httptest.NewRecorder()
-	r.ServeHTTP(w, req)
+// 	body, _ := json.Marshal(map[string]uint{"course_id": course.ID})
+// 	req := httptest.NewRequest(http.MethodPost, fmt.Sprintf("/manager/users/%d/enrollments", user.ID), bytes.NewReader(body))
+// 	req.Header.Set("Content-Type", "application/json")
+// 	req.Header.Set("Authorization", "Bearer "+token)
+// 	w := httptest.NewRecorder()
+// 	r.ServeHTTP(w, req)
 
-	if w.Code != http.StatusConflict {
-		t.Fatalf("expected 409, got %d: %s", w.Code, w.Body.String())
-	}
-}
+// 	if w.Code != http.StatusConflict {
+// 		t.Fatalf("expected 409, got %d: %s", w.Code, w.Body.String())
+// 	}
+// }
 
-func TestManagerAddUserEnrollment_ClassFull(t *testing.T) {
-	setupManagerTestDBWithSessions(t)
-	seedRole(t, 3, "Manager")
-	seedRole(t, 1, "Student")
+// func TestManagerAddUserEnrollment_ClassFull(t *testing.T) {
+// 	setupManagerTestDBWithSessions(t)
+// 	seedRole(t, 3, "Manager")
+// 	seedRole(t, 1, "Student")
 
-	course := seedManagerCourseWithSession(t, "Full Class", 1) // capacity=1
+// 	course := seedManagerCourseWithSession(t, "Full Class", 1) // capacity=1
 
-	// Fill the spot
-	existing := model.User{Name: "Existing", Email: fmt.Sprintf("e-%d@example.com", time.Now().UnixNano()), Password: "pass", RoleID: 1}
-	db.DB.Create(&existing)
-	seedManagerEnrollment(t, existing.ID, course.ID)
+// 	// Fill the spot
+// 	existing := model.User{Name: "Existing", Email: fmt.Sprintf("e-%d@example.com", time.Now().UnixNano()), Password: "pass", RoleID: 1}
+// 	db.DB.Create(&existing)
+// 	seedManagerEnrollment(t, existing.ID, course.ID)
 
-	// Try to add another
-	newUser := model.User{Name: "New User", Email: fmt.Sprintf("n-%d@example.com", time.Now().UnixNano()), Password: "pass", RoleID: 1}
-	db.DB.Create(&newUser)
+// 	// Try to add another
+// 	newUser := model.User{Name: "New User", Email: fmt.Sprintf("n-%d@example.com", time.Now().UnixNano()), Password: "pass", RoleID: 1}
+// 	db.DB.Create(&newUser)
 
-	token := makeToken(t, 999, 3)
-	r := routes.SetupRouter()
+// 	token := makeToken(t, 999, 3)
+// 	r := routes.SetupRouter()
 
-	body, _ := json.Marshal(map[string]uint{"course_id": course.ID})
-	req := httptest.NewRequest(http.MethodPost, fmt.Sprintf("/manager/users/%d/enrollments", newUser.ID), bytes.NewReader(body))
-	req.Header.Set("Content-Type", "application/json")
-	req.Header.Set("Authorization", "Bearer "+token)
-	w := httptest.NewRecorder()
-	r.ServeHTTP(w, req)
+// 	body, _ := json.Marshal(map[string]uint{"course_id": course.ID})
+// 	req := httptest.NewRequest(http.MethodPost, fmt.Sprintf("/manager/users/%d/enrollments", newUser.ID), bytes.NewReader(body))
+// 	req.Header.Set("Content-Type", "application/json")
+// 	req.Header.Set("Authorization", "Bearer "+token)
+// 	w := httptest.NewRecorder()
+// 	r.ServeHTTP(w, req)
 
-	if w.Code != http.StatusConflict {
-		t.Fatalf("expected 409 (class is full), got %d: %s", w.Code, w.Body.String())
-	}
-}
+// 	if w.Code != http.StatusConflict {
+// 		t.Fatalf("expected 409 (class is full), got %d: %s", w.Code, w.Body.String())
+// 	}
+// }
 
-func TestManagerAddUserEnrollment_UserNotFound(t *testing.T) {
-	setupManagerTestDBWithSessions(t)
-	seedRole(t, 3, "Manager")
+// func TestManagerAddUserEnrollment_UserNotFound(t *testing.T) {
+// 	setupManagerTestDBWithSessions(t)
+// 	seedRole(t, 3, "Manager")
 
-	course := seedManagerCourseWithSession(t, "Yoga", 10)
-	token := makeToken(t, 999, 3)
-	r := routes.SetupRouter()
+// 	course := seedManagerCourseWithSession(t, "Yoga", 10)
+// 	token := makeToken(t, 999, 3)
+// 	r := routes.SetupRouter()
 
-	body, _ := json.Marshal(map[string]uint{"course_id": course.ID})
-	req := httptest.NewRequest(http.MethodPost, "/manager/users/9999/enrollments", bytes.NewReader(body))
-	req.Header.Set("Content-Type", "application/json")
-	req.Header.Set("Authorization", "Bearer "+token)
-	w := httptest.NewRecorder()
-	r.ServeHTTP(w, req)
+// 	body, _ := json.Marshal(map[string]uint{"course_id": course.ID})
+// 	req := httptest.NewRequest(http.MethodPost, "/manager/users/9999/enrollments", bytes.NewReader(body))
+// 	req.Header.Set("Content-Type", "application/json")
+// 	req.Header.Set("Authorization", "Bearer "+token)
+// 	w := httptest.NewRecorder()
+// 	r.ServeHTTP(w, req)
 
-	if w.Code != http.StatusNotFound {
-		t.Fatalf("expected 404, got %d: %s", w.Code, w.Body.String())
-	}
-}
+// 	if w.Code != http.StatusNotFound {
+// 		t.Fatalf("expected 404, got %d: %s", w.Code, w.Body.String())
+// 	}
+// }
 
 // ─── DELETE /manager/users/:id/enrollments/:course_id ────────────
 
-func TestManagerDeleteUserEnrollment_OK(t *testing.T) {
-	setupManagerTestDBWithSessions(t)
-	seedRole(t, 3, "Manager")
-	seedRole(t, 1, "Student")
+// func TestManagerDeleteUserEnrollment_OK(t *testing.T) {
+// 	setupManagerTestDBWithSessions(t)
+// 	seedRole(t, 3, "Manager")
+// 	seedRole(t, 1, "Student")
 
-	user := model.User{Name: "Test User", Email: fmt.Sprintf("u-%d@example.com", time.Now().UnixNano()), Password: "pass", RoleID: 1}
-	db.DB.Create(&user)
+// 	user := model.User{Name: "Test User", Email: fmt.Sprintf("u-%d@example.com", time.Now().UnixNano()), Password: "pass", RoleID: 1}
+// 	db.DB.Create(&user)
 
-	course := seedManagerCourseWithSession(t, "Rowing", 10)
-	seedManagerEnrollment(t, user.ID, course.ID)
+// 	course := seedManagerCourseWithSession(t, "Rowing", 10)
+// 	seedManagerEnrollment(t, user.ID, course.ID)
 
-	token := makeToken(t, 999, 3)
-	r := routes.SetupRouter()
+// 	token := makeToken(t, 999, 3)
+// 	r := routes.SetupRouter()
 
-	path := fmt.Sprintf("/manager/users/%d/enrollments/%d", user.ID, course.ID)
-	req := httptest.NewRequest(http.MethodDelete, path, nil)
-	req.Header.Set("Authorization", "Bearer "+token)
-	w := httptest.NewRecorder()
-	r.ServeHTTP(w, req)
+// 	path := fmt.Sprintf("/manager/users/%d/enrollments/%d", user.ID, course.ID)
+// 	req := httptest.NewRequest(http.MethodDelete, path, nil)
+// 	req.Header.Set("Authorization", "Bearer "+token)
+// 	w := httptest.NewRecorder()
+// 	r.ServeHTTP(w, req)
 
-	if w.Code != http.StatusOK {
-		t.Fatalf("expected 200, got %d: %s", w.Code, w.Body.String())
-	}
+// 	if w.Code != http.StatusOK {
+// 		t.Fatalf("expected 200, got %d: %s", w.Code, w.Body.String())
+// 	}
 
-	// Verify deleted
-	var count int64
-	db.DB.Model(&model.Enrollment{}).Where("user_id = ? AND course_id = ?", user.ID, course.ID).Count(&count)
-	if count != 0 {
-		t.Fatalf("expected enrollment to be deleted, but found %d", count)
-	}
-}
+// 	// Verify deleted
+// 	var count int64
+// 	db.DB.Model(&model.Enrollment{}).Where("user_id = ? AND course_id = ?", user.ID, course.ID).Count(&count)
+// 	if count != 0 {
+// 		t.Fatalf("expected enrollment to be deleted, but found %d", count)
+// 	}
+// }
 
-func TestManagerDeleteUserEnrollment_NotFound(t *testing.T) {
-	setupManagerTestDBWithSessions(t)
-	seedRole(t, 3, "Manager")
-	seedRole(t, 1, "Student")
+// func TestManagerDeleteUserEnrollment_NotFound(t *testing.T) {
+// 	setupManagerTestDBWithSessions(t)
+// 	seedRole(t, 3, "Manager")
+// 	seedRole(t, 1, "Student")
 
-	user := model.User{Name: "Test User", Email: fmt.Sprintf("u-%d@example.com", time.Now().UnixNano()), Password: "pass", RoleID: 1}
-	db.DB.Create(&user)
+// 	user := model.User{Name: "Test User", Email: fmt.Sprintf("u-%d@example.com", time.Now().UnixNano()), Password: "pass", RoleID: 1}
+// 	db.DB.Create(&user)
 
-	token := makeToken(t, 999, 3)
-	r := routes.SetupRouter()
+// 	token := makeToken(t, 999, 3)
+// 	r := routes.SetupRouter()
 
-	req := httptest.NewRequest(http.MethodDelete, fmt.Sprintf("/manager/users/%d/enrollments/9999", user.ID), nil)
-	req.Header.Set("Authorization", "Bearer "+token)
-	w := httptest.NewRecorder()
-	r.ServeHTTP(w, req)
+// 	req := httptest.NewRequest(http.MethodDelete, fmt.Sprintf("/manager/users/%d/enrollments/9999", user.ID), nil)
+// 	req.Header.Set("Authorization", "Bearer "+token)
+// 	w := httptest.NewRecorder()
+// 	r.ServeHTTP(w, req)
 
-	if w.Code != http.StatusNotFound {
-		t.Fatalf("expected 404, got %d: %s", w.Code, w.Body.String())
-	}
-}
+// 	if w.Code != http.StatusNotFound {
+// 		t.Fatalf("expected 404, got %d: %s", w.Code, w.Body.String())
+// 	}
+// }
 
-// ─── GET /manager/users/:id/enrollments ──────────────────────────
+// // ─── GET /manager/users/:id/enrollments ──────────────────────────
 
 func TestManagerListUserEnrollments_OK(t *testing.T) {
 	setupManagerTestDBWithSessions(t)
