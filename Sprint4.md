@@ -120,6 +120,40 @@ Students can now filter the class list by category and/or day of the week on the
 
 ---
 
+
+#### 4) Instructor Adds Standby Student
+
+Instructors can now add a student as a standby student for their courses.
+
+**Acceptance Criteria:**
+
+- Instructor can add any student as a standby student to a course they teach via a backend API
+- The system prevents duplicate standbys and enforces maximum standby capacity if applicable
+- Standby students can be retrieved via a dedicated API
+
+**Backend Work Completed**
+
+- Added `POST /manager/users/{user_id}/enrollments` endpoint to allow instructors to add students to a course’s standby list
+- Updated the data model to track standby status and validate standby capacity
+
+---
+
+#### 5) Instructor Removes Standby Student
+
+Instructors can remove a student from the standby list of their course to dynamically manage the standby queue.
+
+**Acceptance Criteria:**
+
+- Instructor can remove a specific standby student from their course via a backend API
+- Once removed, the student no longer occupies a standby spot
+- The API performs permission checks and provides clear feedback
+
+**Backend Work Completed**
+
+- Added `DELETE /instructor/courses/{course_id}/enrollments/{user_id}` endpoint to allow instructors to remove a student from the standby list
+- Implemented permission, status validation, and appropriate response handling
+
+
 ## 2) Frontend Testing Summary
 
 ### 2.1 Unit Tests
