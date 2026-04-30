@@ -8,7 +8,7 @@
 **Project Links:**
 
 - 🔗 **GitHub Repository:** [https://github.com/Ilachan/FitFlow](https://github.com/Ilachan/FitFlow)
-- 📺 **Demo Video:** [https://youtu.be/ED_eJzzcMJ4](https://youtu.be/ED_eJzzcMJ4)
+- 📺 **Demo Video:** [[https://youtu.be/ED_eJzzcMJ4](https://youtu.be/ED_eJzzcMJ4)](https://youtu.be/UtAVc_wOMJQ)
   - Note: As this is the final sprint, the demonstration video includes both the updates for Sprint 4 and a comprehensive summary of the entire project.
 
 ---
