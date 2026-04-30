@@ -8,17 +8,21 @@ import (
 	"time"
 )
 
-// TimeOnly stores a time-of-day without a date.
+// TimeOnly stores a time-of-day without a date portion.
+// Useful for representing clock times such as '09:30:00', regardless of date.
 type TimeOnly struct {
 	time.Time
 }
 
+// Layout for formatting and parsing time-of-day strings (24-hour format).
 const (
-	timeOnlyLayout      = "15:04:05"
-	timeOnlyShortLayout = "15:04"
+	timeOnlyLayout      = "15:04:05" // e.g., "13:45:00"
+	timeOnlyShortLayout = "15:04"    // e.g., "08:20"
 )
 
-// Scan implements sql.Scanner for TIME columns stored as text.
+// Scan implements the sql.Scanner interface for reading from SQL database columns of type TIME.
+// Accepts time.Time, string, or []byte as input (commonly seen from database drivers).
+// Stores the parsed time in TimeOnly. If the input is nil, sets to zero value (empty time).
 func (t *TimeOnly) Scan(value interface{}) error {
 	if value == nil {
 		t.Time = time.Time{}
@@ -38,7 +42,8 @@ func (t *TimeOnly) Scan(value interface{}) error {
 	}
 }
 
-// Value implements driver.Valuer for writing TIME values.
+// Value implements the driver.Valuer interface for writing a TimeOnly value to a SQL database.
+// Returns the time formatted as "HH:MM:SS", or nil if time value is zero.
 func (t TimeOnly) Value() (driver.Value, error) {
 	if t.Time.IsZero() {
 		return nil, nil
@@ -46,7 +51,8 @@ func (t TimeOnly) Value() (driver.Value, error) {
 	return t.Time.Format(timeOnlyLayout), nil
 }
 
-// MarshalJSON renders time-of-day as "HH:MM:SS".
+// MarshalJSON serializes the TimeOnly value as a JSON string in the "HH:MM:SS" format.
+// If value is zero, serializes as JSON null.
 func (t TimeOnly) MarshalJSON() ([]byte, error) {
 	if t.Time.IsZero() {
 		return []byte("null"), nil
@@ -54,7 +60,8 @@ func (t TimeOnly) MarshalJSON() ([]byte, error) {
 	return []byte("\"" + t.Time.Format(timeOnlyLayout) + "\""), nil
 }
 
-// UnmarshalJSON accepts "HH:MM" or "HH:MM:SS".
+// UnmarshalJSON deserializes a JSON string in "HH:MM:SS" or "HH:MM" format into a TimeOnly.
+// If the input is JSON null, resets value to zero (empty time).
 func (t *TimeOnly) UnmarshalJSON(data []byte) error {
 	if string(data) == "null" {
 		t.Time = time.Time{}
@@ -64,6 +71,9 @@ func (t *TimeOnly) UnmarshalJSON(data []byte) error {
 	return t.parseString(trimmed)
 }
 
+// parseString attempts to parse a string as a time-of-day in either "HH:MM:SS" or "HH:MM" format.
+// On success, stores the parsed value in TimeOnly. If the string is empty, resets to zero time.
+// Important: All parsing occurs in the server's local time zone context. Ensure all servers have the same TZ.
 func (t *TimeOnly) parseString(value string) error {
 	value = strings.TrimSpace(value)
 	if value == "" {
@@ -85,7 +95,8 @@ func (t *TimeOnly) parseString(value string) error {
 	return nil
 }
 
-// ParseTimeOnly parses "HH:MM" or "HH:MM:SS" into a TimeOnly value.
+// ParseTimeOnly is a helper function to parse a time-of-day string ("HH:MM" or "HH:MM:SS") and return a TimeOnly value.
+// Returns an error if parsing fails.
 func ParseTimeOnly(value string) (TimeOnly, error) {
 	var t TimeOnly
 	if err := t.parseString(value); err != nil {
